@@ -99,6 +99,14 @@ std::unique_ptr<cpp_entity> detail::parse_cpp_member_variable(const detail::pars
     auto type       = parse_type(context, cur, clang_getCursorType(cur));
     auto is_mutable = clang_CXXField_isMutable(cur) != 0u;
 
+    if (context.logger->is_verbose())
+    {
+        context.logger->log("libclang parser",
+                            format_diagnostic(severity::debug, detail::make_location(cur),
+                                              "name'",
+                                              name.c_str(), "', type'", cppast::to_string(*type), "'"));
+    }
+
     cpp_attribute_list attributes;
     auto               default_value = parse_default_value(attributes, context, cur, name.c_str());
 
