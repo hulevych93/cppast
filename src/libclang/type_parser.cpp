@@ -534,13 +534,19 @@ std::unique_ptr<cpp_type> try_parse_instantiation_type(const detail::parse_conte
     });
 }
 
-std::unique_ptr<cpp_type> try_parse_decltype_type(const detail::parse_context&, const CXCursor& cur,
+std::unique_ptr<cpp_type> try_parse_decltype_type(const detail::parse_context& context, const CXCursor& cur,
                                                   const CXType& type)
 {
     if (clang_isExpression(clang_getCursorKind(cur)))
         return nullptr; // don't use decltype here
 
     return make_leave_type(cur, type, [&](std::string&& spelling) -> std::unique_ptr<cpp_type> {
+
+        context.logger->log("libclang parser",
+                            format_diagnostic(severity::warning, detail::make_location(type),
+                                              "spelling'",
+                                              detail::get_type_kind_spelling(type).c_str(), "'"));
+
         if (!remove_prefix(spelling, "decltype(", false))
             return nullptr;
         remove_suffix(spelling, "...", false); // variadic decltype. fun
