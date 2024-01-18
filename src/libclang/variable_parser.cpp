@@ -104,7 +104,7 @@ std::unique_ptr<cpp_entity> detail::parse_cpp_member_variable(const detail::pars
         context.logger->log("libclang parser",
                             format_diagnostic(severity::debug, detail::make_location(cur),
                                               "name'",
-                                              name.c_str(), "', type'", cppast::to_string(*type), "'"));
+                                              name.c_str(), "', type'", (int)clang_getCursorType(cur).kind, "'"));
     }
 
     cpp_attribute_list attributes;

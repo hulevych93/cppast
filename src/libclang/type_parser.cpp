@@ -563,6 +563,13 @@ std::unique_ptr<cpp_type> try_parse_decltype_type(const detail::parse_context& c
 std::unique_ptr<cpp_type> parse_type_impl(const detail::parse_context& context, const CXCursor& cur,
                                           const CXType& type)
 {
+
+    context.logger->log("libclang parser",
+                        format_diagnostic(severity::warning, detail::make_location(type),
+                                          "spelling'",
+                                          detail::get_type_kind_spelling(type).c_str(), "'"));
+
+
     switch (type.kind)
     {
     // stuff I can't parse
